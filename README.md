@@ -19,11 +19,11 @@ Compare/contrast features of Elm and TypeScript.
 
 #### TypeScript
 
-TypeScript is a gradually-typed superset of JavaScript. It has generics, type annotations and inference, interfaces, union types, classes, arrow functions and more.
+TypeScript is a gradually-typed superset of JavaScript. It has generics, type annotations and inference, interfaces, union types, classes and more.
 
 TypeScript has optional types in order to work in existing JavaScript codebases. These are defined by type annotations.
 
-##### Example
+##### Optional Types Example
 
 ###### Plain ol' ES5 (in a TypeScript file)
 (typescript/src/optional-types.ts)
@@ -96,3 +96,56 @@ To:
 ```
 function log(message: string) {
 ```
+
+#### Elm
+
+Elm is a statically-typed language. It has static types, type aliases, type annotations and inference, records and union types. Elm compiles to JavaScript to target browsers, but it is a different language, *not* a superset of JavaScript.
+
+##### Type annotation/inference example
+
+###### Elm type inference
+
+Enter the following into the Elm repl (`npm run elm repl`)
+```elm
+add a b = a + b
+add 1 2
+```
+
+Output:
+
+```
+3 : number
+```
+
+If you try to add a string and a number Elm recognizes it should be a number.
+
+```elm
+add 1 "2" -- Compiler error.
+```
+
+The [`+` operator](http://package.elm-lang.org/packages/elm-lang/core/5.1.1/Basics#+) only works on numbers. Instead the [`++` operator](http://package.elm-lang.org/packages/elm-lang/core/5.1.1/Basics#++) is used to append strings together. Elm code tends to be explicit when confusion could cause errors.
+
+Output (error):
+
+```
+-- TYPE MISMATCH --------------------------------------------- repl-temp-000.elm
+
+The 2nd argument to function `add` is causing a mismatch.
+
+4|   add 1 "2"
+           ^^^
+Function `add` is expecting the 2nd argument to be:
+
+    number
+
+But it is:
+
+    String
+
+Hint: I always figure out the type of arguments from left to right. If an
+argument is acceptable when I check it, I assume it is "correct" in subsequent
+checks. So the problem may actually be in how previous arguments interact with
+the 2nd.
+```
+
+Yep, that's the compiler message clearly explaining the issue and giving some advice on how to resolve it.

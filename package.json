@@ -4,6 +4,7 @@
   "description": "Compare/contrast Elm and TypeScript.",
   "main": "index.js",
   "scripts": {
+    "elm": "elm",
     "tsc": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -24,5 +25,9 @@
   "bugs": {
     "url": "https://github.com/absynce/elm-vs-typescript/issues"
   },
-  "homepage": "https://github.com/absynce/elm-vs-typescript#readme"
+  "homepage": "https://github.com/absynce/elm-vs-typescript#readme",
+  "devDependencies": {
+    "elm": "^0.18.0",
+    "typescript": "^2.6.2"
+  }
 }
