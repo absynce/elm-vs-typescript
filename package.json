@@ -1,0 +1,28 @@
+{
+  "name": "elm-vs-typescript",
+  "version": "0.0.1",
+  "description": "Compare/contrast Elm and TypeScript.",
+  "main": "index.js",
+  "scripts": {
+    "tsc": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/absynce/elm-vs-typescript.git"
+  },
+  "keywords": [
+    "elm",
+    "typescript",
+    "frontend",
+    "web",
+    "dev",
+    "elm-lang"
+  ],
+  "author": "Jared M. Smith",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/absynce/elm-vs-typescript/issues"
+  },
+  "homepage": "https://github.com/absynce/elm-vs-typescript#readme"
+}
