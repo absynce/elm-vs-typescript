@@ -36,7 +36,7 @@ By design, Elm has a sound type system. Therefore, runtime errors like `undefine
 ### Optional types example in TypeScript
 
 #### Plain ol' ES5 (in a TypeScript file)
-(`typescript/src/optional-types.ts`)
+(`typescript/src/01-optional-types.ts`)
 
 ```typescript
 function log(message) {
@@ -51,7 +51,7 @@ log(134);
 Compile:
 
 ```
-npm run tsc typescript/src/optional-types.ts
+npm run tsc typescript/src/01-optional-types.ts
 ```
 
 Run:
@@ -70,7 +70,7 @@ So are numbers...
 
 #### TypeScript
 
-(`typescript/src/optional-types2.ts`):
+(`typescript/src/02-optional-types-annotated.ts`):
 
 ```typescript
 function log(message: string) {
@@ -85,13 +85,13 @@ log(134); // Compiler error here.
 Compile:
 
 ```
-npm run tsc typescript/src/optional-types.ts
+npm run tsc typescript/src/01-optional-types.ts
 ```
 
 Output (error):
 
 ```
-typescript/src/optional-types.ts(15,6): error TS2345: Argument of type '134' is not assignable to parameter of type 'string'.
+typescript/src/01-optional-types.ts(15,6): error TS2345: Argument of type '134' is not assignable to parameter of type 'string'.
 ```
 
 As you can see this makes it easy to opt-in to benefits of TypeScript from an existing codebase. It only took a change on one line to add the type annotation.
@@ -162,7 +162,7 @@ Yep, that's the compiler message clearly explaining the issue and giving some ad
 Although Elm can infer types for you it's best practice to define them _explicitly_. It's also useful if the compiler can't infer the type or you want to more narrowly define how a function can be used.
 
 ##### Function with inferred types
-(`elm/src/inferred-types.elm`)
+(`elm/src/01-inferred-types.elm`)
 
 This function looks just like the one from the previous example.
 ```
@@ -179,7 +179,7 @@ To run it, use `elm-reactor`:
 npm run elm reactor
 ```
 
-Navigate to `elm/src/inferred-types.elm`.
+Navigate to `elm/src/01-inferred-types.elm`.
 
 Output (to browser):
 
@@ -188,7 +188,7 @@ Output (to browser):
 ```
 
 ##### Function with type annotations
-(`elm/src/type-annotations.elm`)
+(`elm/src/02-type-annotations.elm`)
 
 This function looks just like the one from the previous example with one additional line above the function definition.
 
@@ -204,7 +204,7 @@ To run it, use `elm-reactor`:
 npm run elm reactor
 ```
 
-Navigate to `elm/src/type-annotations.elm`.
+Navigate to `elm/src/02-type-annotations.elm`.
 
 Output (to browser):
 
@@ -214,7 +214,7 @@ Output (to browser):
 
 Now let's edit the `add` function type annotation to only accept integers.
 
-(`elm/src/type-annotations.elm`)
+(`elm/src/02-type-annotations.elm`)
 ```
 add : Int -> Int -> Int
 add a b =
@@ -224,7 +224,7 @@ add a b =
 Output (error):
 
 ```
--- TYPE MISMATCH ---------------------------------- elm\src\type-annotations.elm
+-- TYPE MISMATCH ---------------------------------- elm\src\02-type-annotations.elm
 
 The 2nd argument to function `add` is causing a mismatch.
 
@@ -263,16 +263,133 @@ Elm has optional type inference, which can be turned into a compiler warning. Ei
 
 I run the Elm compiler with `--warn` as a reminder to add type annotations. It even gives me the annotation to copy into code!
 
+### Union types in both (sort of)
+
+Both TypeScript and Elm have something they each call union types. However the syntax and behavior of each is different.
+
+For the sake of this discussion let's narrow their usage to two things:
+* exhaustive cases
+* modeling complex data
+
+#### Exhaustive cases
+
+##### Elm
+
+Define some log levels:
+
+```elm
+type LogLevel
+    = Error
+    | Info
+```
+
+Use them in a case expression:
+```elm
+log : LogLevel -> String -> Html msg
+log logLevel message =
+    case logLevel of
+        Error ->
+            text ("Error: " ++ message)
+
+        Info ->
+            text ("Info: " ++ message)
+```
+
+You can check this out in elm-reactor at `elm/src/03-exhaustive-cases.elm`.
+
+Next let's add another log level for warnings:
+
+```elm
+type LogLevel
+    = Error
+    | Info
+    | Warning
+```
+
+Try compiling it without adding the case by going to
+`elm/src-04-exhaustive-cases-warning.elm` in elm-reactor.
+
+Output (error):
+```
+-- MISSING PATTERNS -------------------- elm\src\04-exhaustive-cases-warning.elm
+
+This `case` does not have branches for all possibilities.
+
+18|>    case logLevel of
+19|>        Error ->
+20|>            text ("Error: " ++ message)
+21|>
+22|>        Info ->
+23|>            text ("Info: " ++ message)
+
+You need to account for the following values:
+
+    ExhaustiveCasesWarning.Warning
+
+Add a branch to cover this pattern!
+
+If you are seeing this error for the first time, check out these hints:
+<https://github.com/elm-lang/elm-compiler/blob/0.18.0/hints/missing-patterns.md>
+The recommendations about wildcard patterns and `Debug.crash` are important!
+```
+
+I'm starting to sound like a broken record, but once again the Elm compiler has our back with a delicious error message on how to fix it. It provides a link to explain the error in more detail to boot!
+
+##### TypeScript
+
+This time define some log levels in TypeScript:
+
+```
+type LogLevel =
+   'Error' |
+   'Info'
+```
+
+That looks pretty similar to Elm.
+
+What about using it in a switch/case statement?
+
+```
+function assertNever(x: never): never {
+    throw new Error("Unexpected object: " + x);
+}
+
+function log(logLevel: LogLevel, message: string) {
+   switch (logLevel) {
+      case 'Error':
+         return 'Error:' + message;
+      case 'Info':
+         return 'Info:' + message;
+      default: return assertNever(logLevel); // error here if there are missing cases
+   }
+}
+```
+
+This looks a bit odd, but the `assertNever` function is [the official way to force exhaustiveness checks](https://www.typescriptlang.org/docs/handbook/advanced-types.html#exhaustiveness-checking).
+
+Compile/run:
+```
+npm run tsc typescript\src\03-exhaustive-cases.ts && node typescript\src\03-exhaustive-cases.js
+```
+
+Next let's add the warning log level:
+// TODO:
+
+#### Summary on union types
+
+TypeScript has a harder time trying to convey the usefulness of union types because it is married to JavaScript.
+
 ## Side-by-side comparison
 
-| Criteria               | TypeScript | Elm     |
-| ---------------------- | ---------- | ------- |
-| Type system soundness  | &cross;    | &check; |
-| Gradual types          | &check;    | &cross; |
-| User-friendly compiler | &cross;    | &check; |
-| Maintainability        | &cross;    | &check; |
-| Safety                 | &cross;    | &check; |
-| Simplicity             | &cross;    | &check; |
+| Criteria                  | TypeScript | Elm     |
+| ------------------------- | ---------- | ------- |
+| Type system soundness     | &cross;    | &check; |
+| Gradual types             | &check;    | &cross; |
+| User-friendly compiler    | &cross;    | &check; |
+| Easily model complex data | &cross;    | &check; |
+| Maintainability           | &cross;    | &check; |
+| Safety                    | &cross;    | &check; |
+| Simplicity                | &cross;    | &check; |
 
 ## Resources
 
