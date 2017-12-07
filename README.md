@@ -373,7 +373,24 @@ npm run tsc typescript\src\03-exhaustive-cases.ts && node typescript\src\03-exha
 ```
 
 Next let's add the warning log level:
-// TODO:
+```
+type LogLevel =
+   'Error' |
+   'Info' |
+   'Warning'
+```
+
+Compile:
+```
+npm run tsc typescript\src\04-exhaustive-cases-warning.ts
+```
+
+Output (error):
+```
+typescript/src/04-exhaustive-cases-warning.ts(18,35): error TS2345: Argument of type '"Warning"' is not assignable to parameter of type 'never'.
+```
+
+This error message isn't particularly useful, but, hey, at least it had an error.
 
 #### Summary on union types
 
