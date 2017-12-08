@@ -219,7 +219,7 @@ add a b =
 Output (error):
 
 ```
--- TYPE MISMATCH ---------------------------------- elm\src\02-type-annotations.elm
+-- TYPE MISMATCH ---------------------------------- elm/src/02-type-annotations.elm
 
 The 2nd argument to function `add` is causing a mismatch.
 
@@ -306,7 +306,7 @@ Try compiling it without adding the case by going to
 
 Output (error):
 ```
--- MISSING PATTERNS -------------------- elm\src\04-exhaustive-cases-warning.elm
+-- MISSING PATTERNS -------------------- elm/src/04-exhaustive-cases-warning.elm
 
 This `case` does not have branches for all possibilities.
 
@@ -364,7 +364,7 @@ This looks a bit odd, but the `assertNever` function is [the official way to for
 
 Compile/run:
 ```
-npm run tsc typescript\src\03-exhaustive-cases.ts && node typescript\src\03-exhaustive-cases.js
+npm run tsc -- --strict typescript/src/03-exhaustive-cases.ts && node typescript/src/03-exhaustive-cases.js
 ```
 
 Next let's add the warning log level:
@@ -377,7 +377,7 @@ type LogLevel =
 
 Compile:
 ```
-npm run tsc typescript\src\04-exhaustive-cases-warning.ts
+npm run tsc -- --strict typescript/src/04-exhaustive-cases-warning.ts
 ```
 
 Output (error):
