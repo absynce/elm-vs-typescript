@@ -7,13 +7,17 @@ Compare/contrast features of Elm and TypeScript.
 ## Contents
 
 * Type systems
-    * Type system overview
-        * TypeScript
-        * Elm
-    * Optional types example in TypeScript
-    * Type annotation/inference example in Elm
-    * Optional inferred vs. optional dynamic types
-    * Union types in both
+    - Type system overview
+        - TypeScript
+        - Elm
+    - Optional types example in TypeScript
+    - Type annotation/inference example in Elm
+    - Optional inferred vs. optional dynamic types
+    - Union types in both (sort of)
+* Just safe vs. Maybe Safe
+    - Runtime errors
+    - Source maps
+    - Debugging
 
 ## Type systems
 
@@ -25,13 +29,13 @@ TypeScript is a gradually-typed superset of JavaScript. It has generics, type an
 
 TypeScript has optional types in order to work in existing JavaScript codebases. These are defined by type annotations.
 
-[By design](https://github.com/Microsoft/TypeScript/wiki/TypeScript-Design-Goals), TypeScript does not have a sound type system.
+[By design](https://github.com/Microsoft/TypeScript/wiki/TypeScript-Design-Goals), TypeScript does **not** have a sound type system.
 
 ### Elm
 
 Elm is a statically-typed language. It has static types, type aliases, type annotations and inference, records and union types. Elm compiles to JavaScript to target browsers, but it is a *different* language, *not* a superset of JavaScript.
 
-By design, Elm has a sound type system. Therefore, runtime errors like `undefined is not a function` [do not occur in Elm](https://guide.elm-lang.org/error_handling/).
+By design, Elm has a _sound_ type system. Therefore, runtime errors like `undefined is not a function` [do not occur in Elm](https://guide.elm-lang.org/error_handling/).
 
 ### Optional types example in TypeScript
 
@@ -165,7 +169,8 @@ Although Elm can infer types for you it's best practice to define them _explicit
 (`elm/src/01-inferred-types.elm`)
 
 This function looks just like the one from the previous example.
-```
+
+```elm
 add a b =
     a + b
 
@@ -192,7 +197,7 @@ Output (to browser):
 
 This function looks just like the one from the previous example with one additional line above the function definition.
 
-```
+```elm
 add : number -> number -> number
 add a b =
     a + b
@@ -215,7 +220,8 @@ Output (to browser):
 Now let's edit the `add` function type annotation to only accept integers.
 
 (`elm/src/02-type-annotations.elm`)
-```
+
+```elm
 add : Int -> Int -> Int
 add a b =
     a + b
@@ -339,7 +345,7 @@ I'm starting to sound like a broken record, but once again the Elm compiler has 
 
 This time define some log levels in TypeScript:
 
-```
+```typescript
 type LogLevel =
    'Error' |
    'Info'
@@ -349,7 +355,7 @@ That looks pretty similar to Elm.
 
 What about using it in a switch/case statement?
 
-```
+```typescript
 function assertNever(x: never): never {
     throw new Error("Unexpected object: " + x);
 }
@@ -365,7 +371,7 @@ function log(logLevel: LogLevel, message: string) {
 }
 ```
 
-This looks a bit odd, but the `assertNever` function is [the official way to force exhaustiveness checks](https://www.typescriptlang.org/docs/handbook/advanced-types.html#exhaustiveness-checking).
+This looks a bit odd, but the `assertNever` function is [the official way to force exhaustiveness checks](https://www.typescriptlang.org/docs/handbook/advanced-types.html#exhaustiveness-checking) in TypeScript.
 
 Compile/run:
 ```
@@ -373,7 +379,7 @@ npm run tsc typescript\src\03-exhaustive-cases.ts && node typescript\src\03-exha
 ```
 
 Next let's add the warning log level:
-```
+```typescript
 type LogLevel =
    'Error' |
    'Info' |
@@ -392,7 +398,21 @@ typescript/src/04-exhaustive-cases-warning.ts(18,35): error TS2345: Argument of 
 
 This error message isn't particularly useful, but, hey, at least it had an error.
 
+#### Modeling complex data
+
+Both [Elm](https://guide.elm-lang.org/types/union_types.html) and [TypeScript](https://www.typescriptlang.org/docs/handbook/advanced-types.html#discriminated-unions) have examples of how to model data using union types.
+
+##### Elm
+
+Elm union types provide a simple way to model complex, odd-shaped data with a clear way to use it.
+
+Let's take the concept of loading data to display on a web page.
+
+This concept is [introduced into Elm as RemoteData](http://package.elm-lang.org/packages/krisajenkins/remotedata/latest) by Kris A. Jenkins. Jeremy Fairbanks explains this concept and it's usefulness in ["Solving the Boolean Identity Crisis"](https://www.youtube.com/watch?v=6TDKHGtAxeg) much better than I can.
+
 #### Summary on union types
+
+Elm union types are a simple, yet powerful tool to model complex data and ensure all cases are always handled.
 
 TypeScript has a harder time trying to convey the usefulness of union types because it is married to JavaScript.
 
